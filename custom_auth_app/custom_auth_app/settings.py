@@ -12,8 +12,27 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+########Sentry##########
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://e6138fba288a4641baf8d19996dcd5f7@o280137.ingest.sentry.io/5282940",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+########Sentry ends#########
+
+AUTH_USER_MODEL =  'users.CustomUser'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,12 +50,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    #core apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #local apps
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +77,7 @@ ROOT_URLCONF = 'custom_auth_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR,MEDIA_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,6 +122,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.backend.EmailOrPhoneModelBackend'
+    # Needed to login by username in Django admin, regardless of `allauth`
+    
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    #'allauth.account.auth_backends.AuthenticationBackend',
+    
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
