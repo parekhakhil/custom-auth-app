@@ -3,4 +3,8 @@
 * Base user model 
 * Email as primary authentication source
 * Materialize css
-* 
+-
+* Flow control 
+** Model
+** View
+** Template
